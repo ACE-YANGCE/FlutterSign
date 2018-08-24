@@ -19,6 +19,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: new MyHomePage(title: '极速登录'),
+      routes: {
+        'forgetPwdRoute': (BuildContext context) => new ForgetPwdPage(),
+        'homeRoute': (BuildContext context) => new HomePage(),
+      },
     );
   }
 }
@@ -185,46 +189,197 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       onPressed: () {
-                        _checkPhone();
-                        _checkPwd();
-                        if (_phoneState && _pwdState) {
-                          _checkStr = '页面跳转下期见咯！';
-                        } else {
-                          if (!_phoneState) {
-                            _checkStr = '请输入11位手机号！';
-                          } else if (!_pwdState) {
-                            _checkStr = '请输入6-10位密码！';
-                          }
-                        }
-                        print(_checkStr);
-                        showDialog<Null>(
-                          context: context,
-                          barrierDismissible: false,
-                          child: new AlertDialog(
-                            title: new Text(
-                              '温馨提示',
-                              style: new TextStyle(
-                                color: Colors.black54,
-                                fontSize: 18.0,
-                              ),
-                            ),
-                            content: new Text(_checkStr),
-                            actions: <Widget>[
-                              new FlatButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: new Text('确定')),
-                            ],
-                          ),
-                        );
+                        // 按 name 方式跳转页面
+//                      Navigator.pushNamed(context, 'homeRoute');
+                        // 按 name 方式跳转页面，并接收返回值
+//                        Navigator.pushNamed(context, 'homeRoute')
+//                            .then((Object result) {
+//                          showDialog(
+//                            context: context,
+//                            builder: (BuildContext context) {
+//                              String str = result.toString();
+//                              return new AlertDialog(
+//                                content: new Text("您返回的内容为:$str"),
+//                              );
+//                            },
+//                          );
+//                        });
+                        // 按 name 方式跳转页面，并销毁当前页面
+//                        Navigator.pushNamedAndRemoveUntil(
+//                            context, "homeRoute", (route) => route == null);
+                        // 直接 push 方式跳转页面
+//                        Navigator.push<Object>(
+//                          context,
+//                          new MaterialPageRoute(
+//                            builder: (BuildContext context) {
+//                              return new HomePage();
+//                            },
+//                          ),
+//                        );
+                        // 直接 push 方式跳转页面，并接收返回内容
+                        Navigator.push<Object>(context, new MaterialPageRoute(
+                            builder: (BuildContext context) {
+                          return new HomePage();
+                        })).then((Object result) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              String str = result.toString();
+                              return new AlertDialog(
+                                content: new Text("您返回的内容为:$str"),
+                              );
+                            },
+                          );
+                        });
+                        // 直接 push 方式跳转页面，并销毁当前页面
+//                        Navigator.pushAndRemoveUntil(context,
+//                            new MaterialPageRoute(
+//                          builder: (BuildContext context) {
+//                            return new HomePage();
+//                          },
+//                        ), (route) => route == null);
+//                        _checkPhone();
+//                        _checkPwd();
+//                        if (_phoneState && _pwdState) {
+//                          _checkStr = '页面跳转下期见咯！';
+//                        } else {
+//                          if (!_phoneState) {
+//                            _checkStr = '请输入11位手机号！';
+//                          } else if (!_pwdState) {
+//                            _checkStr = '请输入6-10位密码！';
+//                          }
+//                        }
+//                        print(_checkStr);
+//                        showDialog<Null>(
+//                          context: context,
+//                          barrierDismissible: false,
+//                          child: new AlertDialog(
+//                            title: new Text(
+//                              '温馨提示',
+//                              style: new TextStyle(
+//                                color: Colors.black54,
+//                                fontSize: 18.0,
+//                              ),
+//                            ),
+//                            content: new Text(_checkStr),
+//                            actions: <Widget>[
+//                              new FlatButton(
+//                                  onPressed: () {
+//                                    Navigator.pop(context);
+//                                  },
+//                                  child: new Text('确定')),
+//                            ],
+//                          ),
+//                        );
                       },
                     ),
                   ),
                 ),
+                new Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    new Padding(
+                      padding: new EdgeInsets.fromLTRB(12.0, 22.0, 26.0, 0.0),
+                      child: new GestureDetector(
+                        onTap: () {
+                          // 单纯跳转页面
+                          Navigator.pushNamed(context, "forgetPwdRoute");
+                          // 传递参数
+                          Navigator.push<String>(
+                            context,
+                            new MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return new ForgetPwdPage(pwd: "123456");
+                              },
+                            ),
+                          );
+                        },
+                        child: new Text(
+                          '忘记密码?',
+                          style: new TextStyle(
+                            color: Colors.blueAccent,
+                            fontSize: 14.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class ForgetPwdPage extends StatelessWidget {
+  final String pwd;
+
+  ForgetPwdPage({this.pwd});
+
+  @override
+  Widget build(BuildContext context) {
+    print('传来密码为：' + this.pwd);
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("忘记密码"),
+      ),
+      body: new Center(
+        child: new Container(
+          width: 340.0,
+          child: new Card(
+            color: Colors.blue,
+            elevation: 16.0,
+            child: new FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: new Text(
+                  "这里是【忘记密码】页面，点击返回!",
+                  style: new TextStyle(
+                    color: Colors.white,
+                  ),
+                )),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("HomePage"),
+      ),
+      body: new Center(
+        child: new Container(
+          width: 340.0,
+          child: new Card(
+            color: Colors.blue,
+            elevation: 16.0,
+            child: new FlatButton(
+                onPressed: () {
+                  // pop 一个参数，销毁当前页面
+//                Navigator.pop(context);
+                  // pop 两个参数，返回一个数组
+//                Navigator.pop(context, ['a,b,c']);
+                  // pop 两个参数，返回一个字符串
+                  Navigator.pop(context, 'HomePage');
+                  // popAndPushNamed 销毁当前页面并跳转新的页面
+//                Navigator.popAndPushNamed(context, 'forgetPwdRoute');
+                },
+                child: new Text(
+                  "这里是【HomePage】页面，点击返回!",
+                  style: new TextStyle(
+                    color: Colors.white,
+                  ),
+                )),
+          ),
         ),
       ),
     );
