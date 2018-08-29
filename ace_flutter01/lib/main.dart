@@ -1,6 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:ace_flutter01/home/home.dart';
+import 'package:fluro/fluro.dart';
 
-void main() => runApp(new MyApp());
+Router router = new Router();
+
+void main() {
+  var homeHandler =
+      Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+    return HomePage(params["data"][0]);
+  });
+
+  void defineRoutes(Router router) {
+    router.define("/home/:data", handler: homeHandler);
+  }
+
+  defineRoutes(router);
+  runApp(new MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -21,7 +37,7 @@ class MyApp extends StatelessWidget {
       home: new MyHomePage(title: '极速登录'),
       routes: {
         'forgetPwdRoute': (BuildContext context) => new ForgetPwdPage(),
-        'homeRoute': (BuildContext context) => new HomePage(),
+        'homeRoute': (BuildContext context) => new HomePageTest(),
       },
     );
   }
@@ -189,8 +205,15 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       onPressed: () {
+                        // 按 fluro 方式跳转页面并传参
+                        var bodyJson = {
+                          'user': (_phonecontroller.text),
+                          'pass': (_pwdcontroller.text)
+                        };
+//                        router.navigateTo(context, "/home/1234", transition: TransitionType.fadeIn);
+                        router.navigateTo(context, '/home/$bodyJson');
                         // 按 name 方式跳转页面
-//                      Navigator.pushNamed(context, 'homeRoute');
+//                        Navigator.pushNamed(context, 'homeRoute');
                         // 按 name 方式跳转页面，并接收返回值
 //                        Navigator.pushNamed(context, 'homeRoute')
 //                            .then((Object result) {
@@ -217,20 +240,20 @@ class _MyHomePageState extends State<MyHomePage> {
 //                          ),
 //                        );
                         // 直接 push 方式跳转页面，并接收返回内容
-                        Navigator.push<Object>(context, new MaterialPageRoute(
-                            builder: (BuildContext context) {
-                          return new HomePage();
-                        })).then((Object result) {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              String str = result.toString();
-                              return new AlertDialog(
-                                content: new Text("您返回的内容为:$str"),
-                              );
-                            },
-                          );
-                        });
+//                        Navigator.push<Object>(context, new MaterialPageRoute(
+//                            builder: (BuildContext context) {
+//                          return new HomePage();
+//                        })).then((Object result) {
+//                          showDialog(
+//                            context: context,
+//                            builder: (BuildContext context) {
+//                              String str = result.toString();
+//                              return new AlertDialog(
+//                                content: new Text("您返回的内容为:$str"),
+//                              );
+//                            },
+//                          );
+//                        });
                         // 直接 push 方式跳转页面，并销毁当前页面
 //                        Navigator.pushAndRemoveUntil(context,
 //                            new MaterialPageRoute(
@@ -283,7 +306,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: new GestureDetector(
                         onTap: () {
                           // 单纯跳转页面
-                          Navigator.pushNamed(context, "forgetPwdRoute");
+//                          Navigator.pushNamed(context, "forgetPwdRoute");
                           // 传递参数
                           Navigator.push<String>(
                             context,
@@ -349,12 +372,12 @@ class ForgetPwdPage extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePageTest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("HomePage"),
+        title: new Text("HomePageTest"),
       ),
       body: new Center(
         child: new Container(
@@ -374,7 +397,7 @@ class HomePage extends StatelessWidget {
 //                Navigator.popAndPushNamed(context, 'forgetPwdRoute');
                 },
                 child: new Text(
-                  "这里是【HomePage】页面，点击返回!",
+                  "这里是本页面【HomePage】页面，点击返回!",
                   style: new TextStyle(
                     color: Colors.white,
                   ),
